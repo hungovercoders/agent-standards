@@ -1,0 +1,24 @@
+{
+  "name": "hungovercoders",
+  "metadata": {
+    "description": "hungovercoders engineering standards for AI coding agents: shared skills for commits, pull requests and CI, and a doctor that keeps instructions in the right place"
+  },
+  "owner": {
+    "name": "hungovercoders",
+    "url": "https://github.com/hungovercoders"
+  },
+  "plugins": [
+    {
+      "name": "agent-standards",
+      "source": "./",
+      "strict": false,
+      "description": "Shared engineering skills: Linear-linked Conventional Commits and draft-first PRs, repo CI setup with one `ci` check, and a doctor that checks agent instructions sit in the right layer. The plugin root is this repo, so skills/ is the plugin's skills directory and a new skill ships with no manifest edit. Codex and Copilot users clone the repo and run task install:skills instead (see docs/install.md).",
+      "author": {
+        "name": "hungovercoders",
+        "url": "https://github.com/hungovercoders"
+      },
+      "homepage": "https://github.com/hungovercoders/agent-standards",
+      "keywords": ["commits", "pull-requests", "linear", "ci", "agents-md", "agent-skills"]
+    }
+  ]
+}

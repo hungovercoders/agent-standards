@@ -1,0 +1,43 @@
+# Standard CI workflow.
+# The org ruleset requires a check named exactly "ci".
+# Do not rename the job, and do not add a matrix to it (a matrix changes the check name).
+
+name: CI
+
+on:
+  pull_request:
+    # Runs on draft PRs too, so every push is checked before the PR is marked ready.
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main] # Replace with the repo's default branch if different.
+
+# Cancel older runs on the same PR when a new push arrives.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      # Set up the toolchain, e.g. actions/setup-node, actions/setup-python,
+      # actions/setup-dotnet, actions/setup-go. Pin the version the repo uses.
+
+      - name: Install
+        run: echo "REPLACE with install command"
+
+      - name: Lint
+        run: echo "REPLACE with lint command, or delete this step"
+
+      - name: Test
+        run: echo "REPLACE with test command"
+
+      - name: Build
+        run: echo "REPLACE with build command, or delete this step"

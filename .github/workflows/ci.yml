@@ -1,0 +1,32 @@
+# Thin wrapper over the Taskfile: install pinned tools, run `task ci`.
+# Add new checks to the `ci` task in Taskfile.yml, not here - anything only
+# CI runs is something contributors can't run locally.
+# Follows our own CI standard: one job named `ci`, runs on draft PRs too.
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install tools from mise.toml
+        uses: jdx/mise-action@v2
+
+      - name: Run CI checks
+        run: task ci

@@ -1,0 +1,97 @@
+# All runnable scripts for this repo live here.
+# Agents and humans: run `task --list` first and reuse what exists -
+# only add a new task when nothing here covers the need.
+# Conventions for adding tasks: docs/ci.md
+version: "3"
+
+vars:
+  PYTHON: python3
+
+tasks:
+  default:
+    desc: List all available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  setup:
+    desc: One-time setup - install git hooks
+    cmds:
+      - task: hooks:install
+      - echo "Setup complete. Run 'task --list' to see available commands."
+
+  hooks:install:
+    desc: Point git at the versioned hooks in .githooks/
+    cmds:
+      - git config core.hooksPath .githooks
+      - chmod +x .githooks/*
+    status:
+      - test "$(git config core.hooksPath)" = ".githooks"
+
+  setup:github:org:
+    desc: "Apply github/ to an org: ci-enabled property + both rulesets (org owner). Dry run unless APPLY=1: task setup:github:org ORG=hungovercoders [APPLY=1]"
+    requires:
+      vars: [ORG]
+    cmds:
+      - "{{.PYTHON}} scripts/github_setup.py org {{.ORG}}{{if eq (.APPLY | default \"\") \"1\"}} --apply{{end}}"
+
+  setup:github:repo:
+    desc: "Apply github/repo-settings.json and opt a repo into the CI ruleset (repo admin). Dry run unless APPLY=1: task setup:github:repo REPO=<owner/name> [APPLY=1]"
+    requires:
+      vars: [REPO]
+    cmds:
+      - "{{.PYTHON}} scripts/github_setup.py repo {{.REPO}}{{if eq (.APPLY | default \"\") \"1\"}} --apply{{end}}"
+
+  install:skills:
+    desc: "Symlink skills into ~/.claude, ~/.codex and ~/.copilot skill dirs: task install:skills [AGENTS=claude,codex,copilot] [GROUP=work,setup] [SKILLS=name,name]"
+    cmds:
+      - "{{.PYTHON}} scripts/install_skills.py --agents {{.AGENTS | default \"claude,codex,copilot\"}}{{if .GROUP}} --groups {{.GROUP}}{{end}}{{if .SKILLS}} --skills {{.SKILLS}}{{end}}"
+
+  uninstall:skills:
+    desc: "Remove the user-level skill symlinks created by install:skills: task uninstall:skills [AGENTS=...] [GROUP=...] [SKILLS=...]"
+    cmds:
+      - "{{.PYTHON}} scripts/install_skills.py --uninstall --agents {{.AGENTS | default \"claude,codex,copilot\"}}{{if .GROUP}} --groups {{.GROUP}}{{end}}{{if .SKILLS}} --skills {{.SKILLS}}{{end}}"
+
+  new:skill:
+    desc: "Scaffold a new skill: task new:skill NAME=my-skill"
+    requires:
+      vars: [NAME]
+    cmds:
+      - "{{.PYTHON}} scripts/new_skill.py {{.NAME}}"
+
+  check:
+    desc: Run all checks (skill best practices, context size, JSON validity)
+    cmds:
+      - task: check:skills
+      - task: check:context
+      - task: check:json
+
+  check:skills:
+    desc: Validate every skill against skill best practices
+    cmds:
+      - "{{.PYTHON}} scripts/check_skills.py"
+
+  check:context:
+    desc: Check context-size budgets and explicit routes on AGENTS.md and docs/
+    cmds:
+      - "{{.PYTHON}} scripts/check_context.py"
+
+  check:json:
+    desc: Check every committed JSON file parses (rulesets, templates, manifests)
+    cmds:
+      - "{{.PYTHON}} scripts/check_json.py"
+
+  pre-commit:
+    desc: Fast checks run by the pre-commit git hook
+    cmds:
+      - task: check
+
+  pre-push:
+    desc: Full checks run by the pre-push git hook
+    cmds:
+      - task: ci
+
+  ci:
+    desc: Everything CI runs - keep the GitHub workflow a thin wrapper over this
+    cmds:
+      - task: check

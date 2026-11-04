@@ -1,0 +1,6 @@
+{
+  "value_type": "true_false",
+  "required": false,
+  "description": "Repo has a passing `ci` job and is opted into the CI-required ruleset. Set by the repo-ci-setup skill.",
+  "values_editable_by": "org_and_repo_actors"
+}

@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "hungovercoders": {
+      "source": { "source": "github", "repo": "hungovercoders/agent-standards" }
+    }
+  },
+  "enabledPlugins": {
+    "agent-standards@hungovercoders": true
+  }
+}
