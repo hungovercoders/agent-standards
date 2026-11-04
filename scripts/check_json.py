@@ -20,9 +20,15 @@ def main() -> int:
     errors: list[str] = []
     count = 0
     for path in sorted(REPO_ROOT.rglob("*.json")):
-        if any(part in SKIP_DIRS for part in path.relative_to(REPO_ROOT).parts):
+        rel = path.relative_to(REPO_ROOT)
+        if any(part in SKIP_DIRS for part in rel.parts):
             continue
-        if path.is_symlink():
+        # local change: a file reached through a symlinked directory (.claude/skills ->
+        # ../skills) is the same file again; Python 3.12's rglob follows
+        # directory symlinks, 3.13's does not, so skip them explicitly.
+        if path.is_symlink() or any(
+            (REPO_ROOT / Path(*rel.parts[:i])).is_symlink() for i in range(1, len(rel.parts))
+        ):
             continue
         count += 1
         try:

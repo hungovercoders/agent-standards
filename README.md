@@ -1,8 +1,24 @@
 # agent-standards
 
-Shared skills that make AI coding agents produce the same commits, pull
-requests and CI setup for everyone at hungovercoders, whichever agent they
-use. One copy of each skill serves Claude Code, Codex and GitHub Copilot.
+We are building a software factory: engineers and AI agents shipping value
+to customers faster, with less rework. That only works when the shared
+parts of the work come out the same whoever asked and whichever agent did
+it. This repo holds those parts as skills, one copy each, serving Claude
+Code, Codex and GitHub Copilot.
+
+## Where the skills sit
+
+```mermaid
+flowchart LR
+  idea([Idea]) --> ticket[Ticket] --> code[Code] --> commit[Commit] --> pr[Pull request] --> ci[CI] --> ship([Shipped])
+  cp[[commit-and-pr]] -.-> commit & pr
+  rc[[repo-ci-setup]] -.-> ci
+  doc[[instructions-doctor]] -.->|every agent reads the same rules| code
+```
+
+Commits, PRs and CI are the covered stages: used every day, consumed by
+everyone, with conventions nobody has to invent. Your tone, tools and
+personal workflows stay yours.
 
 ## Install in two minutes
 
@@ -24,33 +40,20 @@ task install:skills AGENTS=codex,copilot   # drop AGENTS= if you skip the plugin
 
 ## Then try it
 
-| Say to your agent             | What happens                                                        |
-| ----------------------------- | ------------------------------------------------------------------- |
-| "check my agent setup"        | the doctor finds instructions that compete with the shared skills   |
-| "commit this"                 | a Conventional Commit linked to your Linear issue, pushed           |
-| "open a PR"                   | a draft PR with What, Why, How to test and Risks                    |
-| "set up CI for this repo"     | one `ci` job that runs on drafts and gates the merge                |
+| Say to your agent | What happens |
+|---|---|
+| "check my agent setup" | the doctor finds instructions that compete with the shared skills |
+| "commit this" | a Conventional Commit linked to your Linear issue, pushed |
+| "open a PR" | a draft PR with What, Why, How to test and Risks |
+| "set up CI for this repo" | one `ci` job that runs on drafts and gates the merge |
 
-The standard covers commits, PRs and CI: solved once, the same way
-everywhere, so reviewers and agents share expectations. Your tone, tools
-and personal workflows stay yours.
-
-## Learn more
-
-- [docs/why.md](docs/why.md): what we standardise, what stays personal, and why
-- [docs/catalog.md](docs/catalog.md): every skill and the phrases that trigger it
-- [docs/install.md](docs/install.md): per-tool install details and caveats
-- [docs/external-skills.md](docs/external-skills.md): skills from outside this repo to adopt next, such as Cloudflare's
-- [docs/github-setup.md](docs/github-setup.md): the org rulesets and property, and how they're applied
+Everything else lives in [docs/](docs/README.md): why, the skill catalog,
+per-tool install details, skills from outside this repo such as
+Cloudflare's, and the GitHub org setup.
 
 ## Contribute
 
 Everything here reaches every engineer on their next update, so read
-[CONTRIBUTING.md](CONTRIBUTING.md) before changing a skill. Fixes are
-welcome with no ceremony; new rules need a decision record. To work on the
-repo:
-
-```bash
-mise install && task setup   # pinned tools, then git hooks
-task --list                  # every command; `task check` is what CI runs
-```
+[CONTRIBUTING.md](CONTRIBUTING.md) before changing a skill. Fixes need no
+ceremony; new rules need a decision record. `mise install && task setup`
+installs the tools and hooks, and `task --list` shows every command.

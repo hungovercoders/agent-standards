@@ -70,6 +70,7 @@ def points_into_repo(link: Path) -> bool:
         return False
 
 
+# local change: ownership marker, so a moved clone's links can be re-pointed.
 # Per agent directory: the skill names this installer linked there. A link
 # that dangles after the clone moves no longer points into the repo, so the
 # marker is the only way to tell our stale link from someone else's.
@@ -163,7 +164,7 @@ def main() -> int:
     parser.add_argument(
         "--groups",
         default="",
-        help="comma-separated skill families from docs/catalog.md, e.g. work,setup",
+        help="comma-separated skill families from docs/catalog.md, e.g. work,setup",  # local change: families
     )
     args = parser.parse_args()
 

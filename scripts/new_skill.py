@@ -69,6 +69,7 @@ def main() -> int:
     )
 
     print(f"Created skills/{name}/SKILL.md")
+    # local change: the catalog family is a required step here.
     print("Next: fill in the TODOs, add the skill to a family in docs/catalog.md, then run `task check`.")
     return 0
 

@@ -200,7 +200,9 @@ def check_skill(skill_dir: Path, errors: list[str], warnings: list[str]) -> None
                 )
 
     # Unconditional loads of bundled files cost a tool turn on every use.
-    body = text.split("\n---", 2)[-1] if fm is not None else text
+    # local change: maxsplit 1, so a horizontal rule later in the body does
+    # not hide everything before it from the checks below.
+    body = text.split("\n---", 1)[-1] if fm is not None else text
     flagged: set[str] = set()
     for sentence in SENTENCE_SPLIT.split(" ".join(body.split())):
         if UNCONDITIONAL_LOAD_CUES.search(sentence) and BUNDLED_PATH_PATTERN.search(sentence):

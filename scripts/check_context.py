@@ -34,11 +34,13 @@ BUDGETS: list[tuple[str, int, int]] = [
 # docs/README.md (not index.md) so the repo UI renders the map in place.
 # A route is followed only when the line names its trigger and says
 # "read". "See docs/ci.md" is decoration that agents skip.
-# docs/decisions/README.md routes each decision record by the question it
-# answers, so records stay routable without crowding docs/README.md.
+# local change: docs/decisions/README.md routes each decision record by the
+# question it answers, so records stay routable without crowding docs/README.md.
 ROUTING_FILES = ["AGENTS.md", "docs/README.md", "docs/decisions/README.md"]
 BLOCK_START = re.compile(r"^\s*(#|\||[-*+]\s|\d+[.)]\s|>)")
-DOC_LINK = re.compile(r"\]\(([^)\s#]+\.md)\)")
+# local change: a trailing #anchor is allowed, so an anchored route counts
+# and an anchored link to a missing file is still caught.
+DOC_LINK = re.compile(r"\]\(([^)\s#]+\.md)(?:#[^)\s]*)?\)")
 READ_CUE = re.compile(r"\b(read|open|load|follow)\b", re.I)
 # "For <situation>, read X" is trigger-first too; "read X for details" is not.
 TRIGGER_CUE = re.compile(r"\b(before|when|if|whenever|unless|first|any task)\b|^\W*for\b", re.I)
@@ -173,7 +175,7 @@ def check_routes(errors: list[str]) -> None:
     ):
         if not md.is_file():
             continue
-        for target in re.findall(r"\]\(([^)\s#]+)\)", md.read_text(encoding="utf-8")):
+        for target in re.findall(r"\]\(([^)\s#]+)(?:#[^)\s]*)?\)", md.read_text(encoding="utf-8")):  # local change: anchors
             if target.startswith(("http://", "https://", "mailto:")):
                 continue
             if not (md.parent / target).exists():

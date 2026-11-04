@@ -25,6 +25,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import quote
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 GITHUB_DIR = REPO_ROOT / "github"
@@ -48,7 +49,7 @@ def gh(method: str, path: str, body: dict | None, apply: bool, soft: bool = Fals
         )
     except FileNotFoundError:
         if soft:
-            print("  gh (the GitHub CLI) not found: can't list existing rulesets")
+            print(f"  gh (the GitHub CLI) not found: can't {method} {path}")
             return None
         sys.exit("gh (the GitHub CLI) is not installed - see https://cli.github.com")
     if result.returncode != 0:
@@ -96,15 +97,18 @@ def ci_passed(repo: str, apply: bool) -> bool | None:
     if not isinstance(info, dict):
         return None
     branch = info.get("default_branch", "main")
-    prs = gh(
-        "GET",
-        f"repos/{repo}/pulls?state=closed&base={branch}&sort=updated&direction=desc&per_page=20",
+    # The search API filters on merged, so a run of closed-unmerged PRs
+    # (Dependabot, abandoned branches) can't push the merged ones off the page.
+    query = quote(f"repo:{repo} is:pr is:merged base:{branch}", safe="")
+    found = gh(
+        "GET", f"search/issues?q={query}&sort=updated&order=desc&per_page=20",
         None, True, soft=not apply,
     )
-    if not isinstance(prs, list):
+    if not isinstance(found, dict):
         return None
-    for pr in prs:
-        if not (isinstance(pr, dict) and pr.get("merged_at")):
+    for item in found.get("items", []):
+        pr = gh("GET", f"repos/{repo}/pulls/{item['number']}", None, True, soft=not apply)
+        if not isinstance(pr, dict):
             continue
         sha = pr.get("head", {}).get("sha")
         runs = gh("GET", f"repos/{repo}/commits/{sha}/check-runs?check_name=ci", None, True, soft=not apply)

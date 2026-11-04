@@ -72,7 +72,9 @@ if [ -d "$plugins" ]; then
     d=$(dirname "$f")
     printf '%-8s  skill       %s\n' plugin "$d"
     # The shared plugin is the standard; every other plugin's skills are scanned for competing rules.
-    case "$d" in */agent-standards/*) ;; *) printf '%s\n' "$f" >> "$list" ;; esac
+    # marketplaces/ holds the source clones (this repo's root is its plugin, so our skills sit
+    # there too); the installed copies live under cache/, so clones are listed but not scanned.
+    case "$d" in */agent-standards/*|*/marketplaces/*) ;; *) printf '%s\n' "$f" >> "$list" ;; esac
   done
 else
   echo "none found at $plugins"
@@ -109,7 +111,8 @@ if [ -n "$root" ]; then
   fi
 
   echo "== Auto memory (Claude Code)"
-  mem="$HOME/.claude/projects/$(printf '%s' "$root" | tr '/.' '--')/memory"
+  # Claude Code names the project folder by replacing every non-alphanumeric character with '-'.
+  mem="$HOME/.claude/projects/$(printf '%s' "$root" | sed 's/[^A-Za-z0-9]/-/g')/memory"
   if [ -d "$mem" ]; then
     show_dir memory "$mem" '*.md'
   else

@@ -49,8 +49,9 @@ if ! command -v mise >/dev/null 2>&1; then
   rm -f "$BIN_DIR/mise-install.sh"
 fi
 
-if command -v mise >/dev/null 2>&1; then
-  (cd "$REPO_ROOT" && mise install --yes) >/dev/null
+# A failed mise install (a blocked download, say) falls through to the
+# direct task download below rather than aborting under set -e.
+if command -v mise >/dev/null 2>&1 && (cd "$REPO_ROOT" && mise install --yes) >/dev/null 2>&1; then
   if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
     (cd "$REPO_ROOT" && mise env -s bash) >> "$CLAUDE_ENV_FILE"
   fi
@@ -61,6 +62,10 @@ if command -v mise >/dev/null 2>&1; then
   fi
   persist_path
   exit 0
+fi
+
+if command -v mise >/dev/null 2>&1; then
+  echo "bootstrap: mise install failed; downloading the pinned task binary instead." >&2
 fi
 
 # Fallback: fetch the pinned task binary directly. Version comes from
