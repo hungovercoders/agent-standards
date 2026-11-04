@@ -1,0 +1,10 @@
+# Keeps the GitHub Actions used by this repo's CI on current versions.
+# Commit messages follow Conventional Commits, like everything else here.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
