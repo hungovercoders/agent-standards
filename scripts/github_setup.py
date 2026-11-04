@@ -13,7 +13,7 @@ by name and updated in place rather than duplicated.
 
     org  hungovercoders          property definition + both org rulesets (org owner)
     repo <owner/name>   github/repo-settings.json + ci-enabled=true once `ci`
-                        has passed on the default branch (repo admin)
+                        has passed on a merged pull request (repo admin)
 
 Run via `task setup:github:org ORG=hungovercoders` / `task setup:github:repo REPO=...`.
 """
@@ -86,16 +86,27 @@ def setup_org(org: str, apply: bool) -> None:
 
 
 def ci_passed(repo: str, apply: bool) -> bool | None:
-    """Whether a check named `ci` succeeded on the default branch's head.
-    None when it can't be told (dry run without access)."""
-    info = gh("GET", f"repos/{repo}", None, True, soft=not apply)
-    if not isinstance(info, dict):
+    """Whether a check named `ci` succeeded on the head of a merged pull
+    request. A success on the default branch alone would also accept a
+    push-only workflow, which never reports on PRs and so leaves every PR
+    waiting forever once the check is required. None when it can't be told
+    (dry run without access)."""
+    prs = gh(
+        "GET", f"repos/{repo}/pulls?state=closed&sort=updated&direction=desc&per_page=20",
+        None, True, soft=not apply,
+    )
+    if not isinstance(prs, list):
         return None
-    branch = info.get("default_branch", "main")
-    runs = gh("GET", f"repos/{repo}/commits/{branch}/check-runs?check_name=ci", None, True, soft=not apply)
-    if not isinstance(runs, dict):
-        return None
-    return any(r.get("conclusion") == "success" for r in runs.get("check_runs", []))
+    for pr in prs:
+        if not (isinstance(pr, dict) and pr.get("merged_at")):
+            continue
+        sha = pr.get("head", {}).get("sha")
+        runs = gh("GET", f"repos/{repo}/commits/{sha}/check-runs?check_name=ci", None, True, soft=not apply)
+        if isinstance(runs, dict) and any(
+            r.get("conclusion") == "success" for r in runs.get("check_runs", [])
+        ):
+            return True
+    return False
 
 
 def setup_repo(repo: str, apply: bool) -> None:
@@ -107,8 +118,8 @@ def setup_repo(repo: str, apply: bool) -> None:
     passed = ci_passed(repo, apply)
     if passed is False:
         sys.exit(
-            f"  no successful `ci` check on {repo}'s default branch yet: not setting "
-            "ci-enabled. Merge a PR that runs the `ci` job, then re-run."
+            f"  no merged PR of {repo} has a successful `ci` check: not setting "
+            "ci-enabled. Merge a PR on which the `ci` job ran, then re-run."
         )
     if passed is None:
         print("  (couldn't confirm `ci` has passed; the real run checks before setting it)")

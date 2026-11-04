@@ -33,14 +33,14 @@ tasks:
     requires:
       vars: [ORG]
     cmds:
-      - "{{.PYTHON}} scripts/github_setup.py org {{.ORG}}{{if .APPLY}} --apply{{end}}"
+      - "{{.PYTHON}} scripts/github_setup.py org {{.ORG}}{{if eq (.APPLY | default \"\") \"1\"}} --apply{{end}}"
 
   setup:github:repo:
     desc: "Apply github/repo-settings.json and opt a repo into the CI ruleset (repo admin). Dry run unless APPLY=1: task setup:github:repo REPO=<owner/name> [APPLY=1]"
     requires:
       vars: [REPO]
     cmds:
-      - "{{.PYTHON}} scripts/github_setup.py repo {{.REPO}}{{if .APPLY}} --apply{{end}}"
+      - "{{.PYTHON}} scripts/github_setup.py repo {{.REPO}}{{if eq (.APPLY | default \"\") \"1\"}} --apply{{end}}"
 
   install:skills:
     desc: "Symlink skills into ~/.claude, ~/.codex and ~/.copilot skill dirs: task install:skills [AGENTS=claude,codex,copilot] [GROUP=work,setup] [SKILLS=name,name]"

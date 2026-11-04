@@ -35,7 +35,8 @@ ruleset, which requires a check with that exact name.
 to keep when re-syncing: `check_context.py` treats
 `docs/decisions/README.md` as a routing file; `new_skill.py` tells you to
 add the skill to a catalog family; `install_skills.py` names this repo's
-families in its help text. Budgets are constants
+families in its help text; `install_skills.py` re-points dangling links
+left by a moved clone. Budgets are constants
 at the top of each script; change one deliberately, with a reason in the
 commit.
 
@@ -57,7 +58,7 @@ commit.
 |---|---|---|
 | `github/properties/ci-enabled.json` | `task setup:github:org` | The opt-in property for the CI ruleset |
 | `github/rulesets/*.json` | `task setup:github:org` | Baseline (all repos) and CI required (opted-in repos) |
-| `github/repo-settings.json` | `task setup:github:repo` | Delete head branches on merge, allow updating from base; the task also sets `ci-enabled`, but only once `ci` has passed on the default branch |
+| `github/repo-settings.json` | `task setup:github:repo` | Delete head branches on merge, allow updating from base; the task also sets `ci-enabled`, but only once `ci` has passed on a merged PR |
 
 Both tasks dry-run unless `APPLY=1`, and are safe to re-run. Change the
 files through a PR and re-apply. Never edit rulesets in the GitHub UI:

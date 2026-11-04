@@ -138,10 +138,10 @@ Fixes ABC-123
 
 Draft PRs are code reviewed first, then converted to a full PR. A draft must pass CI before it is marked ready. GitHub does not enforce this itself, so this skill does. When the user asks to mark a draft ready:
 
-1. Check CI with `gh pr checks`. All checks must have passed.
+1. Check CI with `gh pr checks`. All checks must have passed, and a check named exactly `ci` must be among them: it is the check the org ruleset requires, and other checks passing while it is absent means its workflow never triggered.
    - **Failing:** stop. Show which checks failed and offer to look at the logs with `gh run view --log-failed`. Do not mark it ready.
    - **Still running:** stop and say so. Offer to wait with `gh pr checks --watch`, then carry on if they pass.
-   - **No checks reported:** stop. The repo has no CI job yet, or it didn't trigger. Point the user to the `repo-ci-setup` skill. Do not mark it ready.
+   - **No checks reported, or none named `ci`:** stop. The repo has no `ci` job yet, or it didn't trigger. Point the user to the `repo-ci-setup` skill. Do not mark it ready.
 2. Compare the branch with its base again. Commits added during review often make the original description out of date.
 3. Update the title and description so they match the final diff. Check the magic word still fits (`Fixes` or `Part of`).
 4. Show the user what changed in the description.

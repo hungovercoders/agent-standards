@@ -12,6 +12,8 @@ set -u
 
 shared="${1:-}"
 root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+# Token shapes to report by location only, and to redact from any snippet printed.
+secrets='sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY'
 list=$(mktemp)
 trap 'rm -f "$list"' EXIT
 
@@ -63,6 +65,19 @@ skill_links user "$HOME/.claude/skills"
 skill_links user "$HOME/.codex/skills"
 skill_links user "$HOME/.copilot/skills"
 
+echo "== Plugins (Claude Code)"
+plugins="$HOME/.claude/plugins"
+if [ -d "$plugins" ]; then
+  find "$plugins" -maxdepth 7 -type f -name SKILL.md -path '*/skills/*' 2>/dev/null | sort | while read -r f; do
+    d=$(dirname "$f")
+    printf '%-8s  skill       %s\n' plugin "$d"
+    # The shared plugin is the standard; every other plugin's skills are scanned for competing rules.
+    case "$d" in */agent-standards/*) ;; *) printf '%s\n' "$f" >> "$list" ;; esac
+  done
+else
+  echo "none found at $plugins"
+fi
+
 if [ -n "$root" ]; then
   echo "== Repo ($root)"
   show repo "$root/AGENTS.md"
@@ -110,11 +125,10 @@ echo "== Process-rule mentions (judge each: a rule, or just a fact?)"
 pattern='commit message|conventional commit|commit format|pull request|PR (title|description|template)|branch nam|squash|gh pr |Fixes [A-Z]+-[0-9]|Refs [A-Z]+-[0-9]|co-authored'
 while read -r f; do
   case "$f" in "$shared"/*) [ -n "$shared" ] && continue ;; esac
-  grep -niE "$pattern" "$f" 2>/dev/null | cut -c1-160 | sed "s|^|$f:|"
+  grep -niE "$pattern" "$f" 2>/dev/null | sed -E "s/$secrets/[REDACTED]/g" | cut -c1-160 | sed "s|^|$f:|"
 done < "$list"
 
 echo "== Possible secrets (file and line only)"
-secrets='sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY'
 while read -r f; do
   grep -HnoE "$secrets" "$f" 2>/dev/null | cut -d: -f1,2
 done < "$list"

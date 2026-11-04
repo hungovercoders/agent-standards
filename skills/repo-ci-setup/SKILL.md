@@ -25,7 +25,7 @@ Brings a repository up to the org standard so it can join the "CI required" rule
 
 ### 1. Check where the repo stands
 
-- Read the current property: `gh api repos/{owner}/{repo}/properties/values`. If `ci-enabled` is already `true` and `.github/workflows/` has a job named `ci`, say the repo is already set up and stop.
+- Read the current property: `gh api repos/{owner}/{repo}/properties/values`. If `ci-enabled` is already `true`, check that a check named exactly `ci` reported on a recent PR (`gh pr checks <number>` on an open or recently merged one). If it did, say the repo is already set up and stop. If it didn't, the job is misnamed, matrixed or skips drafts, and every PR is waiting on it: carry on, and step 3 fixes the workflow.
 - List `.github/workflows/`. Note any existing CI and what its jobs are called.
 - Find the default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`.
 

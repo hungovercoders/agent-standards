@@ -43,17 +43,18 @@ matched by name and updated in place.
 
 ## Repo: settings and opt-in
 
-A repo admin runs, once the repo's `ci` job has passed on its default
-branch:
+A repo admin runs, once the repo's `ci` job has passed on a merged pull
+request:
 
 ```bash
 task setup:github:repo REPO=hungovercoders/<repo> APPLY=1
 ```
 
 It deletes head branches on merge, lets PR authors update from base, and
-sets `ci-enabled`. The task refuses to set the property while no `ci`
-check has passed, because a required check that never reports blocks every
-PR. The `repo-ci-setup` skill walks an agent through the same steps,
+sets `ci-enabled`. The task refuses to set the property until a merged PR
+shows a passing `ci` check: a pass on the default branch alone could come
+from a push-only workflow, and a required check that never reports on PRs
+blocks every one of them. The `repo-ci-setup` skill walks an agent through the same steps,
 including adding the `ci` job.
 
 Opted-in repos are a query on the property:

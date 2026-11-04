@@ -35,6 +35,7 @@ Run via ``task install:skills`` / ``task uninstall:skills``.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -68,6 +69,16 @@ def points_into_repo(link: Path) -> bool:
         return False
 
 
+def stale_link_to_skill(link: Path, skill: Path) -> bool:
+    """A dangling symlink whose target was ``<somewhere>/skills/<this skill>``
+    is ours from before the clone moved. It serves nobody as it stands, so
+    re-pointing it is safe and keeps the "re-run after moving" promise."""
+    if not link.is_symlink() or link.exists():
+        return False
+    target = Path(os.readlink(link))
+    return target.name == skill.name and target.parent.name == SKILLS_DIR.name
+
+
 def install(agents: list[str], skills: list[str] | None) -> tuple[int, int]:
     warnings = 0
     errors = 0
@@ -76,7 +87,7 @@ def install(agents: list[str], skills: list[str] | None) -> tuple[int, int]:
         target_dir.mkdir(parents=True, exist_ok=True)
         for skill in repo_skills(skills):
             link = target_dir / skill.name
-            if points_into_repo(link):
+            if points_into_repo(link) or stale_link_to_skill(link, skill):
                 link.unlink()  # re-link in case the clone moved
             elif link.exists() or link.is_symlink():
                 print(f"WARN  {link}: exists and is not ours - skipped")

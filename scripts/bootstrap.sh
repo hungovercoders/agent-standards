@@ -55,6 +55,10 @@ if command -v mise >/dev/null 2>&1; then
     (cd "$REPO_ROOT" && mise env -s bash) >> "$CLAUDE_ENV_FILE"
   fi
   echo "bootstrap: tools installed via mise from mise.toml."
+  if [ -z "${CLAUDE_ENV_FILE:-}" ] && ! command -v task >/dev/null 2>&1; then
+    echo "bootstrap: mise is not activated in this shell, so 'task' is not on PATH yet."
+    echo "bootstrap: run  eval \"\$(mise activate bash)\"  (or your shell's equivalent), or prefix commands with  mise exec -- task ..."
+  fi
   persist_path
   exit 0
 fi
