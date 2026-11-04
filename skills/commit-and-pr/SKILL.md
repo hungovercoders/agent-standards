@@ -20,7 +20,7 @@ Every branch, commit and PR should trace back to a Linear issue.
 
 **Finding the issue ID**
 1. Read the current branch with `git branch --show-current`.
-2. Match the first issue ID in it, ignoring case (pattern `[A-Za-z]+-[0-9]+`). Linear branch names are lowercase, e.g. `jo/abc-123-add-card-retry` → `ABC-123`.
+2. Match the issue ID at the start of the branch name or straight after the first `/`, ignoring case (pattern `(^|/)([A-Za-z]+-[0-9]+)`). Linear branch names are lowercase, e.g. `jo/abc-123-add-card-retry` → `ABC-123`. Tokens such as `utf-8` or `sha-256` fit the pattern but are not issues: if the match is not a team key you recognise, treat it as no match.
 3. If there's no ID in the branch name, ask the user for it. Do not guess or invent one.
 
 **Branch names**

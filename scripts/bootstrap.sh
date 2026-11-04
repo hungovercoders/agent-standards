@@ -21,6 +21,7 @@ set -euo pipefail
 # inside the skill directory: the repo is wherever git says it is.
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
 BIN_DIR="${HOME}/.local/bin"
+ORIG_PATH="$PATH"
 mkdir -p "$BIN_DIR"
 export PATH="$BIN_DIR:$PATH"
 
@@ -83,4 +84,12 @@ curl -fsSL --max-time 60 "$URL" -o "$TMP/task.tar.gz"
 tar -xzf "$TMP/task.tar.gz" -C "$TMP" task
 install -m 0755 "$TMP/task" "$BIN_DIR/task"
 persist_path
-echo "bootstrap: installed task v${VERSION} to $BIN_DIR (mise unavailable; python is whatever the environment provides)."
+echo "bootstrap: installed task v${VERSION} to $BIN_DIR (mise unavailable)."
+case ":$ORIG_PATH:" in
+  *":$BIN_DIR:"*) ;;
+  *) echo "bootstrap: add $BIN_DIR to your PATH, or 'task' will not be found." ;;
+esac
+# The scripts need python 3.9+ (mise.toml pins the version mise would install).
+if ! python3 -c 'import sys; sys.exit(sys.version_info < (3, 9))' 2>/dev/null; then
+  echo "bootstrap: WARNING python3 is missing or older than 3.9; the task scripts need 3.9+ (mise.toml pins $(sed -nE 's/^python *= *"([^"]+)".*/\1/p' "$REPO_ROOT/mise.toml"))." >&2
+fi

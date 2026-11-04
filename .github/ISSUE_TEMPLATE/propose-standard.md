@@ -2,7 +2,6 @@
 name: Propose a standard or skill
 about: Suggest something agents should do the same way for everyone
 title: "proposal: "
-labels: proposal
 ---
 
 ## What would agents do the same way?

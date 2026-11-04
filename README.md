@@ -18,8 +18,8 @@ Codex, Copilot, or Claude Code without the plugin:
 ```bash
 git clone https://github.com/hungovercoders/agent-standards
 cd agent-standards
-mise install           # or scripts/bootstrap.sh if you don't use mise
-task install:skills    # symlinks into ~/.claude, ~/.codex and ~/.copilot
+mise install   # then activate mise in your shell; or scripts/bootstrap.sh
+task install:skills AGENTS=codex,copilot   # drop AGENTS= if you skip the plugin
 ```
 
 ## Then try it

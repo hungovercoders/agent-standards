@@ -62,7 +62,8 @@ Follow the commit-and-pr skill: a Linear issue and Linear's branch name are need
     runs-on: ubuntu-latest
     steps:
       - name: All required jobs passed
-        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        # 'skipped' counts as a failure: a needed job that was skipped by its own `if:` never ran.
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped')
         run: exit 1
       - run: echo "All required jobs passed"
 ```

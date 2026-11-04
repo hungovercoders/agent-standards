@@ -70,6 +70,10 @@ discovery path risks double-loading.
 
 ## Caveats
 
+- **`task` not found after `mise install`**: mise only puts tools on PATH
+  once it is activated in your shell (`eval "$(mise activate bash)"`, or
+  the equivalent for your shell from the mise docs). `scripts/bootstrap.sh`
+  installs `task` to `~/.local/bin`, which must be on your PATH.
 - **Windows**: committed symlinks need `core.symlinks=true` and Developer
   Mode (or admin); otherwise they check out as text files. The installer
   needs the same. WSL works out of the box.

@@ -66,7 +66,7 @@ they find as live instructions; drop the suffix when you copy one into place.
 | `templates/managed/managed-settings.json` | Enables the plugin for everyone; pairs with the file above |
 | `templates/repo/AGENTS.md.tmpl` | A repo's facts, ready to fill in |
 | `templates/repo/CLAUDE.md.tmpl` | `@AGENTS.md`, nothing else |
-| `templates/repo/.claude/settings.json` | Offers the plugin to anyone who trusts the repo |
+| `templates/repo/.claude/settings.json` | Offers the plugin to anyone who trusts the repo. Same content as `managed-settings.json`, which is the source: copy it here when it changes |
 | `templates/user/CLAUDE.md.tmpl` | An example of what a personal file should and shouldn't hold |
 
 When you change a template, check it still agrees with the doctor's

@@ -53,7 +53,9 @@ Proposals for them are welcome as issues, so the discussion has a home.
 
 This repo follows its own standard: branches come from Linear, commits
 follow `commit-and-pr`, PRs open as drafts, and the `ci` check must be
-green before a draft is marked ready.
+green before a draft is marked ready. The commits that set the repo up
+predate its Linear project and carry no issue reference; every commit
+since does.
 
 ```bash
 mise install    # pinned tools (task, python); or scripts/bootstrap.sh

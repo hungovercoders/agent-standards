@@ -31,8 +31,11 @@ ruleset, which requires a check with that exact name.
 
 `check_skills.py`, `check_context.py`, `catalog.py`, `install_skills.py`,
 `new_skill.py` and `bootstrap.sh` come from
-[dataGriff/skills](https://github.com/dataGriff/skills). The one local
-change: `docs/decisions/README.md` is a routing file. Budgets are constants
+[dataGriff/skills](https://github.com/dataGriff/skills). Local changes
+to keep when re-syncing: `check_context.py` treats
+`docs/decisions/README.md` as a routing file; `new_skill.py` tells you to
+add the skill to a catalog family; `install_skills.py` names this repo's
+families in its help text. Budgets are constants
 at the top of each script; change one deliberately, with a reason in the
 commit.
 
