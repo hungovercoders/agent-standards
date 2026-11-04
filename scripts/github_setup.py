@@ -86,13 +86,19 @@ def setup_org(org: str, apply: bool) -> None:
 
 
 def ci_passed(repo: str, apply: bool) -> bool | None:
-    """Whether a check named `ci` succeeded on the head of a merged pull
-    request. A success on the default branch alone would also accept a
-    push-only workflow, which never reports on PRs and so leaves every PR
-    waiting forever once the check is required. None when it can't be told
-    (dry run without access)."""
+    """Whether a check named `ci` succeeded on the head of a pull request
+    merged into the default branch. A success on the default branch alone
+    would also accept a push-only workflow, and a PR into another branch
+    could run a workflow that never fires on the branch the ruleset
+    protects; either leaves every PR waiting forever once the check is
+    required. None when it can't be told (dry run without access)."""
+    info = gh("GET", f"repos/{repo}", None, True, soft=not apply)
+    if not isinstance(info, dict):
+        return None
+    branch = info.get("default_branch", "main")
     prs = gh(
-        "GET", f"repos/{repo}/pulls?state=closed&sort=updated&direction=desc&per_page=20",
+        "GET",
+        f"repos/{repo}/pulls?state=closed&base={branch}&sort=updated&direction=desc&per_page=20",
         None, True, soft=not apply,
     )
     if not isinstance(prs, list):
@@ -118,8 +124,8 @@ def setup_repo(repo: str, apply: bool) -> None:
     passed = ci_passed(repo, apply)
     if passed is False:
         sys.exit(
-            f"  no merged PR of {repo} has a successful `ci` check: not setting "
-            "ci-enabled. Merge a PR on which the `ci` job ran, then re-run."
+            f"  no PR merged into {repo}'s default branch has a successful `ci` check: "
+            "not setting ci-enabled. Merge a PR on which the `ci` job ran, then re-run."
         )
     if passed is None:
         print("  (couldn't confirm `ci` has passed; the real run checks before setting it)")

@@ -40,7 +40,7 @@ It only reads. If the user isn't in a git repository, it covers the org and user
 
 ### 2. Judge each finding
 
-Read only the files the inventory flagged, plus the repo's `AGENTS.md` and `CLAUDE.md`. For each process mention, decide whether it's a rule or just a fact. "Use Conventional Commits" is a rule. "The release job runs when a PR merges" is a repo fact and stays where it is.
+Read the flagged lines first, then every other inventoried file in the user and repo layers, skipping entries shown as links to the shared skills. The keyword flags prioritise, they don't exclude: a repo fact in a personal file (C6) or a personal path in a repo file (C5) matches no keyword. For each process mention, decide whether it's a rule or just a fact. "Use Conventional Commits" is a rule. "The release job runs when a PR merges" is a repo fact and stays where it is.
 
 Then classify each finding, most serious first:
 

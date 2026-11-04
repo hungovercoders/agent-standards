@@ -71,6 +71,7 @@ Follow the commit-and-pr skill: a Linear issue and Linear's branch name are need
 Then check the existing workflow's triggers match the standard:
 - `pull_request` with types `opened, synchronize, reopened, ready_for_review`
 - No job condition that skips draft PRs (e.g. `if: github.event.pull_request.draft == false`). Drafts must run CI.
+- No `paths` or `paths-ignore` filter on the `pull_request` trigger of the workflow that reports `ci`. A filtered-out workflow reports nothing, and a required check that reports nothing blocks that PR (a docs-only change, say) forever. Filter inside jobs or steps instead.
 - A `concurrency` block with `cancel-in-progress` for pull requests.
 
 Explain any trigger changes to the user before making them.

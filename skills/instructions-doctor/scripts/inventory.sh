@@ -95,10 +95,14 @@ if [ -n "$root" ]; then
   show_dir repo "$root/.cursor/rules" '*'
   skill_links repo "$root/.claude/skills"
   skill_links repo "$root/.codex/skills"
-  find "$root" -mindepth 2 \
+  # No -mindepth: it would stop -prune applying to root-level node_modules and the like.
+  find "$root" \
     \( -name .git -o -name node_modules -o -name vendor -o -name dist -o -name build -o -name .venv -o -name .claude \) -prune \
     -o -type f \( -name AGENTS.md -o -name CLAUDE.md -o -name CLAUDE.local.md \) -print 2>/dev/null \
-    | sort | while read -r f; do show nested "$f"; done
+    | sort | while read -r f; do
+      [ "$(dirname "$f")" = "$root" ] && continue   # root files are listed above
+      show nested "$f"
+    done
 
   if [ -f "$root/CLAUDE.local.md" ] && ! git -C "$root" check-ignore -q CLAUDE.local.md; then
     echo "WARN     CLAUDE.local.md is not gitignored"
@@ -122,7 +126,7 @@ for f in "/Library/Application Support/ClaudeCode/managed-settings.json" "/etc/c
 done
 
 echo "== Process-rule mentions (judge each: a rule, or just a fact?)"
-pattern='commit message|conventional commit|commit format|pull request|PR (title|description|template)|branch nam|squash|gh pr |Fixes [A-Z]+-[0-9]|Refs [A-Z]+-[0-9]|co-authored'
+pattern='commit message|conventional commit|commit format|pull request|PR (title|description|template)|branch nam|squash|gh pr |Fixes [A-Z]+-[0-9]|Refs [A-Z]+-[0-9]|co-authored|\bci\b|github actions|linear|ticket|jira'
 while read -r f; do
   case "$f" in "$shared"/*) [ -n "$shared" ] && continue ;; esac
   grep -niE "$pattern" "$f" 2>/dev/null | sed -E "s/$secrets/[REDACTED]/g" | cut -c1-160 | sed "s|^|$f:|"

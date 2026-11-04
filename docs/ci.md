@@ -35,8 +35,9 @@ ruleset, which requires a check with that exact name.
 to keep when re-syncing: `check_context.py` treats
 `docs/decisions/README.md` as a routing file; `new_skill.py` tells you to
 add the skill to a catalog family; `install_skills.py` names this repo's
-families in its help text; `install_skills.py` re-points dangling links
-left by a moved clone. Budgets are constants
+families in its help text; `install_skills.py` records the links it makes in a
+marker file so a moved clone's links can be re-pointed without touching
+anyone else's. Budgets are constants
 at the top of each script; change one deliberately, with a reason in the
 commit.
 

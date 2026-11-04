@@ -16,7 +16,9 @@ other sources can coexist alongside ours.
 
 Links of ours whose skill no longer exists (renamed, merged or removed)
 are pruned on install, so re-running after a pull leaves no dangling
-entries.
+entries. The names we link are recorded in a ``.agent-standards-links``
+marker in each agent directory, so after the clone moves, re-running
+re-points exactly the links we made and nothing else.
 
 Safety rules:
 - never touch an entry we didn't create: anything that is not a symlink
@@ -35,7 +37,6 @@ Run via ``task install:skills`` / ``task uninstall:skills``.
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from pathlib import Path
 
@@ -69,14 +70,32 @@ def points_into_repo(link: Path) -> bool:
         return False
 
 
-def stale_link_to_skill(link: Path, skill: Path) -> bool:
-    """A dangling symlink whose target was ``<somewhere>/skills/<this skill>``
-    is ours from before the clone moved. It serves nobody as it stands, so
-    re-pointing it is safe and keeps the "re-run after moving" promise."""
-    if not link.is_symlink() or link.exists():
-        return False
-    target = Path(os.readlink(link))
-    return target.name == skill.name and target.parent.name == SKILLS_DIR.name
+# Per agent directory: the skill names this installer linked there. A link
+# that dangles after the clone moves no longer points into the repo, so the
+# marker is the only way to tell our stale link from someone else's.
+MARKER = ".agent-standards-links"
+
+
+def owned_names(target_dir: Path) -> set[str]:
+    marker = target_dir / MARKER
+    if not marker.is_file():
+        return set()
+    return {line.strip() for line in marker.read_text(encoding="utf-8").splitlines() if line.strip()}
+
+
+def write_owned(target_dir: Path, names: set[str]) -> None:
+    marker = target_dir / MARKER
+    if names:
+        marker.write_text("\n".join(sorted(names)) + "\n", encoding="utf-8")
+    elif marker.exists():
+        marker.unlink()
+
+
+def stale_owned_link(link: Path, owned: set[str]) -> bool:
+    """A dangling symlink this installer recorded as its own is ours from
+    before the clone moved, so re-pointing it is safe. A dangling link we
+    never recorded stays untouched, whatever its target looks like."""
+    return link.is_symlink() and not link.exists() and link.name in owned
 
 
 def install(agents: list[str], skills: list[str] | None) -> tuple[int, int]:
@@ -85,9 +104,10 @@ def install(agents: list[str], skills: list[str] | None) -> tuple[int, int]:
     for agent in agents:
         target_dir = AGENT_DIRS[agent]
         target_dir.mkdir(parents=True, exist_ok=True)
+        owned = owned_names(target_dir)
         for skill in repo_skills(skills):
             link = target_dir / skill.name
-            if points_into_repo(link) or stale_link_to_skill(link, skill):
+            if points_into_repo(link) or stale_owned_link(link, owned):
                 link.unlink()  # re-link in case the clone moved
             elif link.exists() or link.is_symlink():
                 print(f"WARN  {link}: exists and is not ours - skipped")
@@ -99,11 +119,14 @@ def install(agents: list[str], skills: list[str] | None) -> tuple[int, int]:
                 print(f"ERROR {link}: failed to create symlink - {exc}", file=sys.stderr)
                 errors += 1
                 continue
+            owned.add(skill.name)
             print(f"ok    {link} -> {skill}")
         for link in sorted(target_dir.iterdir()):
             if points_into_repo(link) and not link.exists():
                 link.unlink()  # its skill was renamed, merged or removed
+                owned.discard(link.name)
                 print(f"pruned {link} (skill no longer exists)")
+        write_owned(target_dir, owned)
     return warnings, errors
 
 
@@ -112,12 +135,15 @@ def uninstall(agents: list[str], skills: list[str] | None) -> int:
         target_dir = AGENT_DIRS[agent]
         if not target_dir.is_dir():
             continue
+        owned = owned_names(target_dir)
         for link in sorted(target_dir.iterdir()):
             if skills is not None and link.name not in skills:
                 continue
-            if points_into_repo(link):
+            if points_into_repo(link) or stale_owned_link(link, owned):
                 link.unlink()
+                owned.discard(link.name)
                 print(f"removed  {link}")
+        write_owned(target_dir, owned)
     return 0
 
 

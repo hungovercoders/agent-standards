@@ -77,7 +77,7 @@ rulesets are the enforcement.
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| PR stuck on "Expected - Waiting for status to be reported" | No job named exactly `ci`, a matrix renamed it, or it didn't trigger | Run `repo-ci-setup`; if the repo isn't ready, set `ci-enabled` back to false |
+| PR stuck on "Expected - Waiting for status to be reported" | No job named exactly `ci`, a matrix renamed it, a `paths` filter skipped the workflow, or it didn't trigger | Run `repo-ci-setup`; if the repo isn't ready, set `ci-enabled` back to false |
 | `ci` doesn't run on drafts | The workflow skips drafts, or its `pull_request` types are incomplete | Use types `opened, synchronize, reopened, ready_for_review` and no draft condition |
 | Skill won't mark a draft ready | `ci` failing, running or missing | Fix and push, or wait with `gh pr checks --watch` |
 | `setup:github:repo` returns 403 | Not a repo admin | Ask an org owner |
