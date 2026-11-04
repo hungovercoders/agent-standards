@@ -28,8 +28,7 @@ behave inconsistently. Run `repo-ci-setup` once per repo.
 ## Install only what you use
 
 Every installed skill's name and description load into every conversation,
-whether or not it triggers. With three skills this barely matters; it will
-as the catalog grows.
+whether or not it triggers.
 
 ```bash
 task install:skills GROUP=work          # one family
@@ -44,10 +43,3 @@ The Claude Code plugin installs everything. To set it up, read
 Skills from outside this repo, such as Cloudflare's for platform work,
 are listed by tier in [external-skills.md](external-skills.md); read it
 when you start platform or practice work.
-
-## Next candidates
-
-Low-debate skills to add once these are in daily use: repo conventions
-(writes a standard `AGENTS.md`), ticket refinement (Given/When/Then
-acceptance criteria) and incident write-up (the existing postmortem
-template). Before proposing one, read [CONTRIBUTING.md](../CONTRIBUTING.md).

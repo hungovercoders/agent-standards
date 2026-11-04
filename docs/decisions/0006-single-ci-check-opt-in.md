@@ -1,7 +1,5 @@
 # 0006: One required check named `ci`, opted into per repo
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
 An org ruleset requires a status check by name. A required check that never
@@ -20,8 +18,7 @@ every repo without CI on day one.
 
 ## Consequences
 
-- Nothing breaks at rollout; repos join when ready, and progress is a
-  query on one property.
+- Nothing blocks a repo without CI; repos join when `ci` passes, and the
+  opted-in set is a query on one property.
 - Renaming the job, or adding a matrix to it, breaks the ruleset match.
-- Required approvals start at 0, because review happens on the draft;
-  raising it is a separate decision.
+- Required approvals are 0, because review happens on the draft.

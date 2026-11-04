@@ -31,9 +31,9 @@ task install:skills AGENTS=codex,copilot   # drop AGENTS= if you skip the plugin
 | "open a PR"                   | a draft PR with What, Why, How to test and Risks                    |
 | "set up CI for this repo"     | one `ci` job that runs on drafts and gates the merge                |
 
-That is the whole standard for now: commits, PRs and CI. Solving these
-once, the same way everywhere, is the common ground for anything more
-opinionated later. Your tone, tools and personal workflows stay yours.
+The standard covers commits, PRs and CI: solved once, the same way
+everywhere, so reviewers and agents share expectations. Your tone, tools
+and personal workflows stay yours.
 
 ## Learn more
 
@@ -41,7 +41,7 @@ opinionated later. Your tone, tools and personal workflows stay yours.
 - [docs/catalog.md](docs/catalog.md): every skill and the phrases that trigger it
 - [docs/install.md](docs/install.md): per-tool install details and caveats
 - [docs/external-skills.md](docs/external-skills.md): skills from outside this repo to adopt next, such as Cloudflare's
-- [docs/rollout.md](docs/rollout.md): rolling the standards out to the GitHub org
+- [docs/github-setup.md](docs/github-setup.md): the org rulesets and property, and how they're applied
 
 ## Contribute
 

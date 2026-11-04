@@ -67,8 +67,7 @@ change a standard.
 
 ## Measuring effect
 
-Structural checks can't tell whether a skill helps. When one becomes
-contested or expensive, add with/without-skill evals following the pattern
-in [dataGriff/skills](https://github.com/dataGriff/skills): realistic
-prompts, a grader, and a committed results table. That isn't set up here
-yet. Start simple, and add it when the first skill needs it.
+Structural checks can't tell whether a skill helps. A contested or
+expensive skill gets with/without-skill evals following the pattern in
+[dataGriff/skills](https://github.com/dataGriff/skills): realistic prompts,
+a grader, and a committed results table.

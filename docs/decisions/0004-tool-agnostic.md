@@ -1,10 +1,8 @@
 # 0004: Tool-agnostic skills and repo instructions
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
-Engineers use Claude Code, Codex and GitHub Copilot, and that will change.
+Engineers use Claude Code, Codex and GitHub Copilot, and the set changes.
 All three read the open Agent Skills format (`SKILL.md`), and all read a
 repo's `AGENTS.md`; Claude Code reads `AGENTS.md` only when there's no
 `CLAUDE.md`, or through an `@AGENTS.md` import.

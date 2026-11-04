@@ -1,7 +1,5 @@
 # 0007: Draft-first PRs, green CI before review
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
 The team raises draft PRs, reviews them, then converts them to full PRs.

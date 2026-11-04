@@ -36,9 +36,9 @@ explains, editor and tool choice, personal shortcuts and workflows nobody
 else consumes. The test is simple: **does anyone else consume the output?**
 If yes, it follows the shared standard. If no, it's personal.
 
-We're also not standardising opinions that people argue about: code review
-style, testing philosophy, API naming. Those come later, if at all, once the
-low-debate standards have earned trust.
+Opinions that people argue about are out of scope too: code review style,
+testing philosophy, API naming. The standards cover shared artefacts that
+have an existing convention behind them.
 
 ## Principles
 
@@ -53,27 +53,27 @@ low-debate standards have earned trust.
    `AGENTS.md`, which they all read.
 4. **Adopt, don't invent.** Conventional Commits, Linear's branch names and
    magic words, GitHub rulesets. There's less to debate and less to teach.
-5. **Start with low debate.** Commits and PRs first. They're used daily and
-   few people feel strongly about them.
+5. **Low debate.** Commits, PRs and CI are used daily and few people feel
+   strongly about them.
 6. **Guide with skills, enforce with machines.** Skills shape behaviour.
    Rulesets and CI make the few non-negotiables hard rules, because
    instructions alone can be ignored.
-7. **Opt in, never break.** Repos join stricter rules once they're ready,
-   so nothing stops working on rollout day.
+7. **Opt in, never break.** A repo joins the CI rule when its `ci` job
+   passes; nothing blocks a repo that hasn't.
 8. **Change by PR.** Every standard here has a decision record and changes
    through review like any other code.
 
 The reasoning behind each standard is in [decisions/](decisions/README.md).
 
-## How we'll know it's working
+## Signals
 
-Take a baseline before rollout, then watch:
+These say whether the standards are working:
 
 - the share of repos opted into the CI ruleset (`ci-enabled`)
 - the share of PRs linked to a Linear issue
 - time from "ready for review" to merge
-- findings from `instructions-doctor` falling over time
-- what reviewers and pilot teams say
+- findings from `instructions-doctor` per run
+- what reviewers say
 
-If a standard adds friction without moving any of these, change it or drop
-it. That's what the decision records are for.
+A standard that adds friction without moving any of these is changed or
+dropped through a new decision record.

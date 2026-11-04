@@ -62,7 +62,7 @@ they find as live instructions; drop the suffix when you copy one into place.
 
 | File | Use |
 |---|---|
-| `templates/managed/CLAUDE.md.tmpl` | The org's managed instructions, deployed by IT |
+| `templates/managed/CLAUDE.md.tmpl` | The org's managed instructions, deployed centrally |
 | `templates/managed/managed-settings.json` | Enables the plugin for everyone; pairs with the file above |
 | `templates/repo/AGENTS.md.tmpl` | A repo's facts, ready to fill in |
 | `templates/repo/CLAUDE.md.tmpl` | `@AGENTS.md`, nothing else |

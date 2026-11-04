@@ -49,19 +49,19 @@ Skill sets we don't own (Cloudflare's, dataGriff's) are pointed to, never
 copied. To recommend one, add it to [docs/external-skills.md](docs/external-skills.md);
 read that page's "Adding a source" first for the bar.
 
-## What we are not standardising yet
+## Out of scope
 
 Code review style, testing philosophy, API naming, anything people feel
-strongly about. Those come after commits, PRs and CI have earned trust.
-Proposals for them are welcome as issues, so the discussion has a home.
+strongly about. The standards cover shared artefacts with an existing
+convention behind them. Anything else is an issue, so the discussion has
+a home.
 
 ## Working on this repo
 
 This repo follows its own standard: branches come from Linear, commits
 follow `commit-and-pr`, PRs open as drafts, and the `ci` check must be
-green before a draft is marked ready. The commits that set the repo up
-predate its Linear project and carry no issue reference; every commit
-since does.
+green before a draft is marked ready. Commits that predate the repo's
+Linear project carry no issue reference.
 
 ```bash
 mise install    # pinned tools (task, python); or scripts/bootstrap.sh

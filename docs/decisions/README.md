@@ -1,9 +1,9 @@
 # Decision records
 
-One short record per standard: the context, what we decided and what
-follows from it. All are **Proposed** until the team agrees them.
-To change a standard, add a new record that supersedes the old one rather
-than editing it, so the reasoning stays readable.
+One short record per standard: the context, the decision and what
+follows from it. A changed standard gets a new record that supersedes the
+old one; records are never edited to say something new, so the reasoning
+stays readable.
 
 ## Routes
 

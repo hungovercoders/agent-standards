@@ -1,7 +1,5 @@
 # 0005: Adopt existing conventions for commits, branches and links
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
 Inventing a commit or branch format invites weeks of debate, and every

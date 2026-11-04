@@ -1,7 +1,5 @@
 # 0002: One home per instruction
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
 Agents load managed, user, repo, local and skill instructions together and
@@ -21,5 +19,5 @@ placement; it doesn't change files unless asked.
   more "always do X" lines that compete further.
 - The layer table lives inside the skill because the skill runs in other
   repos; `docs/instruction-layers.md` explains it and links there.
-- People will need to remove process rules from their personal files.
-  The doctor shows them exactly which lines.
+- Process rules in personal files are findings; the doctor shows exactly
+  which lines.

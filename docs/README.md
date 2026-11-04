@@ -13,7 +13,7 @@ doc whose trigger matches.
 | choosing a skill, or picking a `GROUP=` to install | Read [catalog.md](catalog.md) first: every skill by family, with when to use it |
 | installing the skills into Claude Code, Codex or Copilot | Read [install.md](install.md) before touching `.claude/`, `.codex/` or settings |
 | adopting skills from outside this repo (Cloudflare, dataGriff), or recommending a new source | Read [external-skills.md](external-skills.md) first: tiers, install routes, the bar for adding one |
-| rolling the standards out to a GitHub org | Read [rollout.md](rollout.md) first: phases, GitHub setup, pilot, troubleshooting |
+| applying or troubleshooting the GitHub org setup (property, rulesets, repo opt-in) | Read [github-setup.md](github-setup.md) first |
 | deciding where an instruction belongs (org, user, repo, skill, agent) | Read [instruction-layers.md](instruction-layers.md) first |
 | proposing a change to a skill or a new standard | Read [../CONTRIBUTING.md](../CONTRIBUTING.md) first: the bar, and when a decision record is needed |
 | creating or editing a skill | Read [skills.md](skills.md) before you scaffold or change one |

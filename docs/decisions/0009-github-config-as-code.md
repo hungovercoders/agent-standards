@@ -1,7 +1,5 @@
 # 0009: GitHub configuration as files, applied by a task
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
 The skills depend on GitHub being set up a certain way: a custom property,
@@ -14,8 +12,8 @@ unreviewed, and stop matching what the docs say.
 - `task setup:github:org` and `task setup:github:repo` apply them via
   `gh api`. Both dry-run unless `APPLY=1`, and are safe to re-run.
 - Changes go through a PR to this repo, then get re-applied.
-- The baseline ruleset ships disabled; it is switched on by a PR once
-  announced.
+- The baseline ruleset's `enforcement` field is the switch, changed by
+  PR like any other setting.
 
 ## Consequences
 

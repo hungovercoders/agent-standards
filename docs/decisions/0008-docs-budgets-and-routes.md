@@ -1,7 +1,5 @@
 # 0008: Docs have budgets and explicit routes
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
 Agents load `AGENTS.md` on every task, and instruction-following degrades

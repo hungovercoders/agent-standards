@@ -1,7 +1,5 @@
 # 0003: Skills own process, repos own facts, people own style
 
-Status: Proposed · 2026-11-04
-
 ## Context
 
 Process (how to commit, open a PR, set up CI) is the same in every repo.
