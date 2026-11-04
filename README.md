@@ -40,6 +40,7 @@ opinionated later. Your tone, tools and personal workflows stay yours.
 - [docs/why.md](docs/why.md): what we standardise, what stays personal, and why
 - [docs/catalog.md](docs/catalog.md): every skill and the phrases that trigger it
 - [docs/install.md](docs/install.md): per-tool install details and caveats
+- [docs/external-skills.md](docs/external-skills.md): skills from outside this repo to adopt next, such as Cloudflare's
 - [docs/rollout.md](docs/rollout.md): rolling the standards out to the GitHub org
 
 ## Contribute

@@ -39,6 +39,12 @@ task install:skills SKILLS=commit-and-pr
 The Claude Code plugin installs everything. To set it up, read
 [install.md](install.md) when you're installing for the first time.
 
+## Beyond this repo
+
+Skills from outside this repo, such as Cloudflare's for platform work,
+are listed by tier in [external-skills.md](external-skills.md); read it
+when you start platform or practice work.
+
 ## Next candidates
 
 Low-debate skills to add once these are in daily use: repo conventions

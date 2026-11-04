@@ -43,6 +43,12 @@ If all four pass, scaffold it with `task new:skill NAME=my-skill` and
 follow [docs/skills.md](docs/skills.md) for how to write it so it works in
 Claude Code, Codex and Copilot alike.
 
+## Recommending skills from outside this repo
+
+Skill sets we don't own (Cloudflare's, dataGriff's) are pointed to, never
+copied. To recommend one, add it to [docs/external-skills.md](docs/external-skills.md);
+read that page's "Adding a source" first for the bar.
+
 ## What we are not standardising yet
 
 Code review style, testing philosophy, API naming, anything people feel
