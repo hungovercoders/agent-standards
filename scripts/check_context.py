@@ -62,6 +62,18 @@ SUITE_METADATA_MAX_TOKENS = 3500
 ALWAYS_LOADED_TARGET_TOKENS = 2000
 
 
+# local change: root files that are routed and read like topic docs get the
+# topic-doc line budget, the cold-start report and link resolution too.
+ROOT_TOPIC_DOCS = ["CONTRIBUTING.md"]
+
+
+def topic_docs() -> list[Path]:
+    """Every doc that is read on a route: docs/**/*.md plus the root topic files."""
+    docs_dir = REPO_ROOT / "docs"
+    found = sorted(docs_dir.rglob("*.md")) if docs_dir.is_dir() else []
+    return found + [REPO_ROOT / rel for rel in ROOT_TOPIC_DOCS if (REPO_ROOT / rel).is_file()]
+
+
 def estimate_tokens(text: str) -> int:
     return len(text) // 4
 
@@ -95,13 +107,11 @@ def print_cold_start_report() -> None:
     print(f"  always loaded  AGENTS.md (via CLAUDE.md)   {always:>6}  (target <= {ALWAYS_LOADED_TARGET_TOKENS})")
     print(f"  fallback hop   docs/README.md               {hop:>6}  (uncovered tasks only)")
     print(f"  uncovered task AGENTS.md + docs/README.md   {always + hop:>6}")
-    docs_dir = REPO_ROOT / "docs"
-    if docs_dir.is_dir():
-        for doc in sorted(docs_dir.rglob("*.md")):
-            rel = doc.relative_to(REPO_ROOT)
-            if str(rel) == "docs/README.md":
-                continue
-            print(f"  topic doc      {str(rel):<28}{tokens_of(str(rel)):>6}")
+    for doc in topic_docs():
+        rel = doc.relative_to(REPO_ROOT)
+        if str(rel) == "docs/README.md":
+            continue
+        print(f"  topic doc      {str(rel):<28}{tokens_of(str(rel)):>6}")
     if always > ALWAYS_LOADED_TARGET_TOKENS:
         print(
             f"  note: AGENTS.md costs more than {ALWAYS_LOADED_TARGET_TOKENS} tokens on "
@@ -170,9 +180,7 @@ def check_routes(errors: list[str]) -> None:
                 "docs/README.md. An unrouted doc is invisible to agents - add a "
                 "'when you ..., read ...' row."
             )
-    for md in [REPO_ROOT / "AGENTS.md", REPO_ROOT / "README.md"] + (
-        sorted(docs_dir.rglob("*.md")) if docs_dir.is_dir() else []
-    ):
+    for md in [REPO_ROOT / "AGENTS.md", REPO_ROOT / "README.md"] + topic_docs():
         if not md.is_file():
             continue
         for target in re.findall(r"\]\(([^)\s#]+)(?:#[^)\s]*)?\)", md.read_text(encoding="utf-8")):  # local change: anchors
@@ -218,18 +226,16 @@ def main() -> int:
         )
 
     # Fanned-out docs each stay digestible.
-    docs_dir = REPO_ROOT / "docs"
-    if docs_dir.is_dir():
-        for doc in sorted(docs_dir.rglob("*.md")):
-            rel = doc.relative_to(REPO_ROOT)
-            if str(rel) == "docs/README.md":
-                continue  # budgeted above
-            n_lines = len(doc.read_text(encoding="utf-8").splitlines())
-            if n_lines > DOCS_MAX_LINES:
-                errors.append(
-                    f"{rel}: {n_lines} lines (budget {DOCS_MAX_LINES}). Split it "
-                    "and route from docs/README.md."
-                )
+    for doc in topic_docs():
+        rel = doc.relative_to(REPO_ROOT)
+        if str(rel) == "docs/README.md":
+            continue  # budgeted above
+        n_lines = len(doc.read_text(encoding="utf-8").splitlines())
+        if n_lines > DOCS_MAX_LINES:
+            errors.append(
+                f"{rel}: {n_lines} lines (budget {DOCS_MAX_LINES}). Split it "
+                "and route from docs/README.md."
+            )
 
     # SKILL.md bodies load whole when a skill triggers — keep the token cost sane.
     skills_dir = REPO_ROOT / "skills"

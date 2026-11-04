@@ -22,7 +22,8 @@ ruleset, which requires a check with that exact name.
   in one `docs/catalog.md` family, and a warning for files loaded on every
   use.
 - `task check:context` (`scripts/check_context.py`): line and token budgets
-  on README, AGENTS.md, `docs/README.md` and topic docs; `CLAUDE.md` is
+  on README, AGENTS.md, `docs/README.md` and topic docs (`docs/**/*.md`
+  plus `CONTRIBUTING.md`, which is routed and read the same way); `CLAUDE.md` is
   exactly `@AGENTS.md`; every doc has an explicit route from AGENTS.md,
   `docs/README.md` or `docs/decisions/README.md`; relative links resolve.
 - `task check:json` (`scripts/check_json.py`): every JSON file parses, so a
